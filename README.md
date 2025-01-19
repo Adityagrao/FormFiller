@@ -15,6 +15,8 @@ A web application to manage users, generate PDF forms dynamically based on user 
 
 ## How to run 
 - Run the backend Solution in HTTPS mode - the Swagger needs to be running at https://localhost:7257/swagger/index.html if it is different, then please update in the HTML (const apiBaseUrl = "https://localhost:7257/api";)
+- dotnet build
+- dotnet run
 - Run the index.html using VsCode Go Live
 
 
