@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Form Filler</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, button, table {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+
+<h1>PDF Form Filler</h1>
+
+<!-- Section 1: Insert Users -->
+<section id="insertUsers">
+  <h2>Insert User</h2>
+  <form id="addUserForm">
+    <label for="lastname">Last Name</label>
+    <input type="text" id="lastname" name="lastname" required>
+
+    <label for="firstname">First Name</label>
+    <input type="text" id="firstname" name="firstname" required>
+
+    <label for="dob">Date of Birth</label>
+    <input type="date" id="dob" name="dob" required>
+
+    <label for="postalcode">Postal Code</label>
+    <input type="text" id="postalcode" name="postalcode" required>
+
+    <label for="streetname">Street Name</label>
+    <input type="text" id="streetname" name="streetname" required>
+
+    <label for="housenumber">House Number + Addition</label>
+    <input type="text" id="housenumber" name="housenumber" required>
+
+    <button type="button" onclick="addUser()">Add User</button>
+  </form>
+  <p id="addUserMessage"></p>
+</section>
+
+<!-- Section 2: View Users -->
+<section id="viewUsers">
+  <h2>View Users</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th>Date of Birth</th>
+        <th>Postal Code</th>
+        <th>Street Name</th>
+        <th>House Number + Addition</th>
+      </tr>
+    </thead>
+    <tbody id="usersTableBody">
+      <tr><td colspan="7">Loading users...</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Section 3: Select Form and User -->
+<section id="selectForm">
+  <h2>Select Form and User</h2>
+  <form id="formSelector">
+    <label for="formType">Select Form</label>
+    <select id="formType" name="formType" required>
+      <option value="" disabled selected>Loading forms...</option>
+    </select>
+
+    <label for="userId">Select User ID</label>
+    <select id="userId" name="userId" required>
+      <option value="" disabled selected>Loading users...</option>
+    </select>
+
+    <button type="button" onclick="generatePdf()">Download PDF</button>
+  </form>
+  <p id="formMessage"></p>
+</section>
+
+<script>
+  const apiBaseUrl = "https://localhost:7257/api";
+
+  // Fetch all forms and populate the dropdown
+  async function fetchForms() {
+    try {
+      const response = await fetch(`${apiBaseUrl}/Form`);
+      const forms = await response.json();
+      const formTypeSelect = document.getElementById("formType");
+      formTypeSelect.innerHTML = "";
+      forms.forEach(form => {
+        const option = document.createElement("option");
+        option.value = form;
+        option.textContent = form;
+        formTypeSelect.appendChild(option);
+      });
+    } catch (error) {
+      console.error("Error fetching forms:", error);
+    }
+  }
+
+  // Fetch all users and populate the table and dropdown
+  async function fetchUsers() {
+    try {
+      const response = await fetch(`${apiBaseUrl}/Users`);
+      const users = await response.json();
+      const usersTableBody = document.getElementById("usersTableBody");
+      const userIdSelect = document.getElementById("userId");
+      usersTableBody.innerHTML = "";
+      userIdSelect.innerHTML = "";
+      users.forEach(user => {
+        // Add to table
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${user.id}</td>
+          <td>${user.lastName}</td>
+          <td>${user.firstName}</td>
+          <td>${user.dateOfBirth}</td>
+          <td>${user.postalCode}</td>
+          <td>${user.streetName}</td>
+          <td>${user.houseNumberAddition}</td>
+        `;
+        usersTableBody.appendChild(row);
+
+        // Add to dropdown
+        const option = document.createElement("option");
+        option.value = user.id;
+        option.textContent = user.id;
+        userIdSelect.appendChild(option);
+      });
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
+  // Add a new user
+  async function addUser() {
+    const formData = {
+      lastName: document.getElementById('lastname').value,
+      firstName: document.getElementById('firstname').value,
+      dateOfBirth: document.getElementById('dob').value,
+      postalCode: document.getElementById('postalcode').value,
+      streetName: document.getElementById('streetname').value,
+      houseNumberAddition: document.getElementById('housenumber').value,
+    };
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/Users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        document.getElementById("addUserMessage").textContent = "User added successfully!";
+        fetchUsers(); // Refresh users
+      } else {
+        const errorMessage = await response.text();
+        document.getElementById("addUserMessage").textContent = `Error: ${errorMessage}`;
+      }
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+  }
+
+  // Generate and download the PDF
+  async function generatePdf() {
+    const formType = document.getElementById("formType").value;
+    const userId = document.getElementById("userId").value;
+
+    if (!formType || !userId) {
+      document.getElementById("formMessage").textContent = "Please select both a form and a user.";
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/Form/${formType}?userId=${userId}`, { method: 'POST' });
+
+      if (response.ok) {
+        document.getElementById("formMessage").textContent = "PDF generated successfully!";
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${formType}_${userId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        const errorMessage = await response.text();
+        document.getElementById("formMessage").textContent = `Error: ${errorMessage}`;
+      }
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  }
+
+  // Initialize the page
+  window.onload = () => {
+    fetchForms();
+    fetchUsers();
+  };
+</script>
+
+</body>
+</html>

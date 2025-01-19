@@ -1,0 +1,28 @@
+﻿{
+  "Forms": [
+    {
+      "FormName": "ABN_Form",
+      "FilePath": "Templates/ABN-AMRO-ClientForm.pdf",
+      "Fields": [
+        { "FormFieldName": "Tekstveld 1", "FieldName": "LastName", "XCoordinate": 240, "YCoordinate": 463, "PageNumber": 1},
+        { "FormFieldName": "Tekstveld 2", "FieldName": "FirstName", "XCoordinate": 240, "YCoordinate": 440, "PageNumber": 1 },
+        { "FormFieldName": "Tekstveld 3", "FieldName": "DateOfBirth", "XCoordinate": 240, "YCoordinate": 417, "PageNumber": 1 },
+        { "FormFieldName": "Tekstveld 5", "FieldName": "StreetName", "XCoordinate": 240, "YCoordinate": 342, "PageNumber": 1 },
+        { "FormFieldName": "Tekstveld 6", "FieldName": "PostalCode", "XCoordinate": 240, "YCoordinate": 319, "PageNumber": 1 },
+        { "FormFieldName": "Tekstveld 5", "FieldName": "HouseNumberAddition", "XCoordinate": 330, "YCoordinate": 342, "PageNumber": 1}
+      ]
+    },        
+    {
+      "FormName": "Rabobank_Form",
+      "FilePath": "Templates/Rabobank-ClientForm.pdf",
+      "Fields": [
+        { "FormFieldName": "Tekstveld 1", "FieldName": "LastName", "XCoordinate": 230, "YCoordinate": 605, "PageNumber": 2 }, 
+        { "FormFieldName": "Tekstveld 1", "FieldName": "FirstName", "XCoordinate": 230, "YCoordinate": 580, "PageNumber": 2 }, 
+        { "FormFieldName": "Tekstveld 1", "FieldName": "DateOfBirth", "XCoordinate": 230, "YCoordinate": 525, "PageNumber": 2 }, 
+        { "FormFieldName": "Tekstveld 1", "FieldName": "StreetName", "XCoordinate": 230, "YCoordinate": 447, "PageNumber": 2 }, 
+        { "FormFieldName": "Tekstveld 1", "FieldName": "PostalCode", "XCoordinate": 230, "YCoordinate": 420, "PageNumber": 2 }, 
+        { "FormFieldName": "Tekstveld 1", "FieldName": "HouseNumberAddition", "XCoordinate": 320, "YCoordinate": 447, "PageNumber": 2 }
+      ]
+    }
+  ]
+}
